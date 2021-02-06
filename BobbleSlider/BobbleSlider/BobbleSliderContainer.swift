@@ -77,7 +77,7 @@ class BobbleSliderContainer: UIView {
     /// Whether the user is currently interacting with the slider or not
     private var isInteracting: Bool = false {
         didSet {
-            self.setSlideToRateLabelVisibility()
+            self.setStartSlidingLabelVisibility()
             self.tapGesture?.isEnabled = !self.isInteracting
         }
     }
@@ -133,10 +133,10 @@ class BobbleSliderContainer: UIView {
         return label
     }()
     
-    /// Slide to rate label that toggles based on slider's value (Show on rating=0, else dont show)
-    lazy private var slideToRateLabel: UILabel = {
+    /// Start Sliding label that toggles based on slider's value (Show on value=0, else dont show)
+    lazy private var startSlidingLabel: UILabel = {
         let label: UILabel = UILabel(frame: .zero)
-        label.text = "SLIDE TO RATE →"
+        label.text = "START SLIDING →"
         label.font = UIFont.systemFont(ofSize: 12.0)
         label.textColor = UIColor.darkGray
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -158,13 +158,13 @@ class BobbleSliderContainer: UIView {
         return bubbleSliderThumbCenter
     }
     
-    /// the Slide to Rate label should be visible only if the rating is 0 and the user isn't
+    /// the Start Sliding label should be visible only if the value is 0 and the user isn't
     /// interacting with it
-    private func setSlideToRateLabelVisibility() {
+    private func setStartSlidingLabelVisibility() {
         if self.isInteracting == false && bobbleSlider.value == 0 {
-            self.slideToRateLabel.isHidden = false
+            self.startSlidingLabel.isHidden = false
         } else {
-            self.slideToRateLabel.isHidden = true
+            self.startSlidingLabel.isHidden = true
         }
     }
     
@@ -174,12 +174,12 @@ class BobbleSliderContainer: UIView {
         return roundedStep * bobbleSlider.stepValue
     }
     
-    var shouldAllowToRate: Bool = true {
+    var shouldAllowToSlide: Bool = true {
         didSet {
-            self.isUserInteractionEnabled = self.shouldAllowToRate
+            self.isUserInteractionEnabled = self.shouldAllowToSlide
             
-            if self.shouldAllowToRate {
-                // Rating can be changed, so prepare the Haptic Feedback engine.
+            if self.shouldAllowToSlide {
+                // Value can be changed, so prepare the Haptic Feedback engine.
                 if self.selectionFeedbackGenerator == nil {
                     self.selectionFeedbackGenerator = UISelectionFeedbackGenerator()
                 }
@@ -227,7 +227,7 @@ class BobbleSliderContainer: UIView {
         
         self.addSubview(self.sliderValueLabel)
         self.addSubview(self.bobbleSlider)
-        self.addSubview(self.slideToRateLabel)
+        self.addSubview(self.startSlidingLabel)
         self.addSubview(self.sliderThumbWithShadow)
         self.addSubview(self.floatingThumbImageView)
         
@@ -250,8 +250,8 @@ class BobbleSliderContainer: UIView {
                                                           NSLayoutConstraint(item: self.bobbleSlider, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0.0),
                                                           NSLayoutConstraint(item: self.bobbleSlider, attribute: .trailing, relatedBy: .equal, toItem: self.sliderValueLabel, attribute: .leading, multiplier: 1.0, constant: -5.0), NSLayoutConstraint(item: self.sliderValueLabel, attribute: .trailing, relatedBy: .equal, toItem: self, attribute: .trailing, multiplier: 1.0, constant: 0.0),
                                                           NSLayoutConstraint(item: self.sliderValueLabel, attribute: .centerY, relatedBy: .equal, toItem: self.bobbleSlider, attribute: .centerY, multiplier: 1.0, constant: 0.0),
-                                                          NSLayoutConstraint(item: self.slideToRateLabel, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0),
-                                                          NSLayoutConstraint(item: self.slideToRateLabel, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1.0, constant: -20.0)]
+                                                          NSLayoutConstraint(item: self.startSlidingLabel, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0),
+                                                          NSLayoutConstraint(item: self.startSlidingLabel, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1.0, constant: -20.0)]
         
         let heartViewConstraints: [NSLayoutConstraint] = [NSLayoutConstraint(item: self.floatingThumbImageView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: bubbleSliderDefaults.heartImageHeight), NSLayoutConstraint(item: self.floatingThumbImageView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: bubbleSliderDefaults.heartImageHeight)]
         
@@ -293,7 +293,7 @@ class BobbleSliderContainer: UIView {
             
             strongSelf.floatingThumbImageView.center = strongSelf.getCalculatedCenterForHeart()
             strongSelf.sliderThumbWithShadow.center = strongSelf.bobbleSlider.thumbCenter
-            strongSelf.setSlideToRateLabelVisibility()
+            strongSelf.setStartSlidingLabelVisibility()
         }
     }
     
