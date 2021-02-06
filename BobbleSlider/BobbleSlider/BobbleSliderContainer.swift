@@ -60,7 +60,7 @@ class BobbleSliderContainer: UIView {
         static let thumbThemeColor: UIColor = UIColor.purple
         static let trackThemeColor: UIColor = UIColor(hexString: "#dcd0ff") // Lavender
         static let floatingImage: UIImage? = UIImage(named: "heart_image")
-        fileprivate static let heartImageHeight: CGFloat = 32.0
+        fileprivate static let floatingThumbImageHeight: CGFloat = 32.0
         fileprivate static let distanceBetweenHeartAndThumbImage: CGFloat = 8.0
         fileprivate static let thumbImageHeight: CGFloat = 14.0
         fileprivate static let sliderValueLabelWidth: CGFloat = 50.0
@@ -84,7 +84,7 @@ class BobbleSliderContainer: UIView {
     
     /// The Y position of the heart when it is floating above the slider
     lazy private var floatingHeartVerticalOffsetFromTrack: CGFloat = {
-        return (bubbleSliderDefaults.heartImageHeight + bubbleSliderDefaults.thumbImageHeight) / 2 + bubbleSliderDefaults.distanceBetweenHeartAndThumbImage
+        return (bubbleSliderDefaults.floatingThumbImageHeight + bubbleSliderDefaults.thumbImageHeight) / 2 + bubbleSliderDefaults.distanceBetweenHeartAndThumbImage
     }()
     
     /// The floating heart view on top of the slider, that chases the thumb
@@ -174,6 +174,7 @@ class BobbleSliderContainer: UIView {
         return roundedStep * bobbleSlider.stepValue
     }
     
+    /// Set this to false if you want to disable interaction with the slider (and remove haptic feedback as well)
     var shouldAllowToSlide: Bool = true {
         didSet {
             self.isUserInteractionEnabled = self.shouldAllowToSlide
@@ -243,6 +244,7 @@ class BobbleSliderContainer: UIView {
         self.floatingThumbImageView.image = self.themeProvider?.floatingThumbImage ?? UIImage(named: "heart_image")
         self.floatingThumbImageView.tintColor = self.themeProvider?.thumbThemeColor ?? bubbleSliderDefaults.thumbThemeColor
         self.sliderThumbWithShadow.tintColor = self.themeProvider?.thumbThemeColor ?? bubbleSliderDefaults.thumbThemeColor
+        self.shouldAllowToSlide = true
                 
         let sliderValueLabelConstraint: NSLayoutConstraint = NSLayoutConstraint(item: self.sliderValueLabel, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: bubbleSliderDefaults.sliderValueLabelWidth)
         
@@ -253,7 +255,7 @@ class BobbleSliderContainer: UIView {
                                                           NSLayoutConstraint(item: self.startSlidingLabel, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0),
                                                           NSLayoutConstraint(item: self.startSlidingLabel, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1.0, constant: -20.0)]
         
-        let heartViewConstraints: [NSLayoutConstraint] = [NSLayoutConstraint(item: self.floatingThumbImageView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: bubbleSliderDefaults.heartImageHeight), NSLayoutConstraint(item: self.floatingThumbImageView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: bubbleSliderDefaults.heartImageHeight)]
+        let heartViewConstraints: [NSLayoutConstraint] = [NSLayoutConstraint(item: self.floatingThumbImageView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: bubbleSliderDefaults.floatingThumbImageHeight), NSLayoutConstraint(item: self.floatingThumbImageView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: bubbleSliderDefaults.floatingThumbImageHeight)]
         
         let thumbShadowConstraints: [NSLayoutConstraint] = [NSLayoutConstraint(item: self.sliderThumbWithShadow, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: bubbleSliderDefaults.thumbImageHeight), NSLayoutConstraint(item: self.sliderThumbWithShadow, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: bubbleSliderDefaults.thumbImageHeight)]
         
